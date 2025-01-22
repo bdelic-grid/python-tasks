@@ -1,7 +1,7 @@
 import os
 import sys
 
-def getException():
+def getExtension():
     filename = input("Please enter a filename: ")
     root, ext = os.path.splitext(filename)
 
@@ -12,7 +12,7 @@ def getException():
 
 if __name__ == "__main__":
     try:
-        ext = getException()
+        ext = getExtension()
         print(f"Extension is {ext}")
     except ValueError as e:
         print(e)
