@@ -3,14 +3,10 @@ import sys
 import requests
 
 def load_data():
-    # TODO return to user input
-    #user_in = input("Please enter a path to survey file in JSON format and a list of emails separated by a space: ")
+    user_in = input("Please enter a path to survey file in JSON format and a list of emails separated by a space: ")
     
-    #json_path = user_in.split(" ")[0]
-    #emails_path = user_in.split(" ")[1]
-
-    json_path = "./survey.json"
-    emails_path = "./emails.txt"
+    json_path = user_in.split(" ")[0]
+    emails_path = user_in.split(" ")[1]
 
     try:
         with open(json_path, 'r') as f:
