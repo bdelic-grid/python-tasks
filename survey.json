@@ -1,0 +1,69 @@
+{
+    "Customer_Satisfaction_Survey": {
+      "General_Experience": {
+        "Overall_Satisfaction": {
+          "Description": "How satisfied are you with your overall experience with our product?",
+          "Answers": [
+            "Very Satisfied",
+            "Satisfied",
+            "Neutral",
+            "Dissatisfied",
+            "Very Dissatisfied"
+          ]
+        },
+        "Ease_of_Use": {
+          "Description": "How easy was it to use the product?",
+          "Answers": [
+            "Very Easy",
+            "Easy",
+            "Neutral",
+            "Difficult",
+            "Very Difficult"
+          ]
+        },
+        "Likelihood_to_Recommend": {
+          "Description": "How likely are you to recommend our product to others?",
+          "Answers": [
+            "Very Likely",
+            "Likely",
+            "Neutral",
+            "Unlikely",
+            "Very Unlikely"
+          ]
+        }
+      },
+      "Customer_Service": {
+        "Service_Experience": {
+          "Description": "How would you rate your experience with our customer service?",
+          "Answers": [
+            "Excellent",
+            "Good",
+            "Average",
+            "Poor",
+            "Very Poor"
+          ]
+        },
+        "Response_Time": {
+          "Description": "How satisfied were you with the response time from customer service?",
+          "Answers": [
+            "Very Satisfied",
+            "Satisfied",
+            "Neutral",
+            "Dissatisfied",
+            "Very Dissatisfied"
+          ]
+        },
+        "Resolution_Effectiveness": {
+          "Description": "How effective was customer service in resolving your issue?",
+          "Answers": [
+            "Very Effective",
+            "Effective",
+            "Neutral",
+            "Ineffective",
+            "Very Ineffective"
+          ]
+        }
+      }
+    }
+  }
+  
