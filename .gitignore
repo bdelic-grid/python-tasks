@@ -1,2 +1,4 @@
 venv/
 log.txt
+token.txt
+.DS_Store
