@@ -108,7 +108,7 @@ def add_page(url, access_token, page_info):
         print(response.text)
 
 
-def add_question(url, access_token, questions, answers):
+def add_questions(url, access_token, questions, answers):
     headers = {
         'Content-Type': "application/json",
         'Accept': "application/json",
@@ -120,14 +120,25 @@ def add_question(url, access_token, questions, answers):
         data = json.dumps(data)
 
         response = requests.post(url, headers=headers, data=data)
-        if response.status_code == 201:
-            print(response.text)
-        else:
+        if response.status_code != 201:
             print(f"Error: {response.status_code}")
             print(response.text)
 
+def create_collector(url, access_token):
+    headers = {
+        'Content-Type': "application/json",
+        'Accept': "application/json",
+        'Authorization': f"Bearer {access_token}"
+    }
 
-        
+    data = json.dumps({"type": "weblink", "name": "Collector"})
+    response = requests.post(url, headers=headers, data=data)
+    if response.status_code == 201:
+        return json.loads(response.text)["url"]
+    else:
+        print(f"Error: {response.status_code}")
+        print(response.text)
+
 
 if __name__ == "__main__":
     try:
@@ -143,7 +154,11 @@ if __name__ == "__main__":
     
     survey_id = create_survey(base_url + "/surveys", access_token, survey_name)
     page_id = add_page(base_url + f"/surveys/{survey_id}/pages", access_token, page_info)
-    add_question(base_url + f"/surveys/{survey_id}/pages/{page_id}/questions", access_token, questions, answers)
+    add_questions(base_url + f"/surveys/{survey_id}/pages/{page_id}/questions", access_token, questions, answers)
+
+    survey_url = create_collector(base_url + f"/surveys/{survey_id}/collectors", access_token)
+    print(survey_url)
+
     
     #print("------------------------ALL SURVEYS------------------------")
     #get_all_surveys(base_url + "/surveys", access_token)
