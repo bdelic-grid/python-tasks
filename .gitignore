@@ -3,3 +3,5 @@ log.txt
 token.txt
 .DS_Store
 emails.txt
+token.json
+credentials.json
