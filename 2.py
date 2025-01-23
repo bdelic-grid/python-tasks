@@ -1,6 +1,16 @@
 import json
 import sys
 import requests
+import base64
+import os
+
+from email.message import EmailMessage
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
 
 def load_data():
     user_in = input("Please enter a path to survey file in JSON format and a list of emails separated by a space: ")
@@ -135,6 +145,49 @@ def create_collector(url, access_token):
         print(f"Error: {response.status_code}")
         print(response.text)
 
+def send_emails(survey_url, emails):
+
+    SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+
+    creds = None
+    if os.path.exists("token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open("token.json", "w") as token:
+            token.write(creds.to_json())
+
+    try:
+        service = build("gmail", "v1", credentials=creds)
+
+        for email in emails:
+            message = EmailMessage()
+
+            message.set_content(survey_url)
+            message["From"] = "bdelic@griddynamics.com"
+            message["Subject"] = "Please fill out this survey!"
+            message["To"] = email
+
+            encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+
+            create_message = {"raw": encoded_message}
+            # pylint: disable=E1101
+            send_message = (
+                service.users()
+                .messages()
+                .send(userId="me", body=create_message)
+                .execute()
+            )
+            print(f'Message Id: {send_message["id"]}')
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+        send_message = None
+
 
 if __name__ == "__main__":
     try:
@@ -153,7 +206,7 @@ if __name__ == "__main__":
     add_questions(base_url + f"/surveys/{survey_id}/pages/{page_id}/questions", access_token, questions, answers)
 
     survey_url = create_collector(base_url + f"/surveys/{survey_id}/collectors", access_token)
-    print(survey_url)
+    send_emails(survey_url, emails)
 
     
     #print("------------------------ALL SURVEYS------------------------")
