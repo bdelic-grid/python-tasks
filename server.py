@@ -1,5 +1,6 @@
 from uuid import uuid4
 from random import choice
+import json
 from flask import Flask, jsonify, request
 from flask_httpauth import HTTPTokenAuth
 
@@ -29,20 +30,21 @@ def get_menu():
     return jsonify(menu), 200
 
 # request format:
-# {"user": user, "order": [pizza_ids], "token": token}
+# {"user": user, "order": [pizza_ids]}
 @app.route("/order", methods = ["POST"])
 def create_order():
-    data = request.get_json()
+    data = request.json
+    data = json.loads(data)
+    
     users.append(data["user"])
 
     order_id = str(uuid4())
     order = data["order"]
 
-    print(data)
-
     total_price = 0
     for o in order:
-        if o not in menu:
+        o = int(o)
+        if o not in menu.keys():
             return jsonify({"error": "One of the given items is not on the menu!"}), 404
         total_price += menu[o]["price"]
 
@@ -50,7 +52,7 @@ def create_order():
 
     orders[order_id] = {"status": status, "total_price": total_price, "name": data["user"]}
 
-    return {"order_id": order_id, "status": status, "total_price": total_price}, 201
+    return jsonify({"order_id": order_id, "status": status, "total_price": total_price}), 201
 
 
 @app.route("/order/<order_id>", methods = ["GET"])
