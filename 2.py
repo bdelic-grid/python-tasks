@@ -1,18 +1,19 @@
 import json
-import sys
 import requests
 import base64
 import os
 
 from email.message import EmailMessage
 from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 def load_data():
+    '''Loads emails and questions from JSON for survey'''
+
     user_in = input("Please enter a path to survey file in JSON format and a list of emails separated by a space: ")
     
     json_path = user_in.split(" ")[0]
@@ -26,13 +27,15 @@ def load_data():
             emails_list = []
             for line in f:
                 emails_list.append(line)
-    except FileNotFoundError:
-        raise FileNotFoundError("Error: file was not found")
+    except FileNotFoundError as e:
+        raise FileNotFoundError("Error: file was not found") from e
 
     return json_data, emails_list
 
 
 def parse_json(data):
+    '''Parses JSON to extract questions'''
+
     survey_name = list(data.keys())[0]
 
     questions = []
@@ -57,16 +60,20 @@ def parse_json(data):
 
 
 def load_token():
+    '''Loads access token'''
+
     try:
-        with open("token.txt", "r") as f:
+        with open("token.txt", 'r') as f:
             token = f.readline()
-    except FileNotFoundError:
-        raise FileNotFoundError("Error: file was not found")
+    except FileNotFoundError as e:
+        raise FileNotFoundError("Error: file was not found") from e
 
     return token
 
 
 def get_all_surveys(url, access_token):
+    '''Retrieves all surveys from SurveyMonkey'''
+
     headers = {
         'Accept': "application/json",
         'Authorization': f"Bearer {access_token}"
@@ -81,6 +88,8 @@ def get_all_surveys(url, access_token):
 
 
 def create_survey(url, access_token, survey_name):
+    '''Creates a survey on SurveyMonkey'''
+
     headers = {
         'Content-Type': "application/json",
         'Accept': "application/json",
@@ -98,6 +107,8 @@ def create_survey(url, access_token, survey_name):
 
 
 def add_page(url, access_token, page_info):
+    '''Adds a page to a survey'''
+
     headers = {
         'Content-Type': "application/json",
         'Accept': "application/json",
@@ -115,6 +126,8 @@ def add_page(url, access_token, page_info):
 
 
 def add_questions(url, access_token, questions, answers):
+    '''Adds all parsed questions to a survey'''
+
     headers = {
         'Content-Type': "application/json",
         'Accept': "application/json",
@@ -130,7 +143,10 @@ def add_questions(url, access_token, questions, answers):
             print(f"Error: {response.status_code}")
             print(response.text)
 
+
 def create_collector(url, access_token):
+    '''Creates a collector to get a URL for a survey'''
+
     headers = {
         'Content-Type': "application/json",
         'Accept': "application/json",
@@ -144,8 +160,11 @@ def create_collector(url, access_token):
     else:
         print(f"Error: {response.status_code}")
         print(response.text)
+        
 
 def send_emails(survey_url, emails):
+    '''Sends mails to provided email addresses'''
+    
 
     SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
@@ -159,7 +178,7 @@ def send_emails(survey_url, emails):
         else:
             flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
             creds = flow.run_local_server(port=0)
-        with open("token.json", "w") as token:
+        with open("token.json", 'w') as token:
             token.write(creds.to_json())
 
     try:
@@ -195,7 +214,6 @@ if __name__ == "__main__":
         access_token = load_token().strip()
     except FileNotFoundError as e:
         print(e)
-        sys.exit(1)
 
     survey_name, questions, page_info, answers = parse_json(json_data)
 
@@ -207,7 +225,3 @@ if __name__ == "__main__":
 
     survey_url = create_collector(base_url + f"/surveys/{survey_id}/collectors", access_token)
     send_emails(survey_url, emails)
-
-    
-    #print("------------------------ALL SURVEYS------------------------")
-    #get_all_surveys(base_url + "/surveys", access_token)
