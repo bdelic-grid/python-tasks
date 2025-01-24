@@ -17,7 +17,9 @@ def get_distro_info():
 
         return f"Product name: {product_name}, product version: {product_version}, build version: {build_version}"
     except subprocess.CalledProcessError as e:
-        raise Exception("Error retrieving distro info") from e
+        print("Error retrieving distro info")
+        print(e.returncode, e.output)
+        raise e
     
 def get_mem_info():
     memory_info = psutil.virtual_memory()
@@ -29,22 +31,37 @@ def get_cpu_info():
     cpu_count = psutil.cpu_count(logical=False)
     cpu_freq = psutil.cpu_freq()[0]
 
-    return f"Processor: {cpu_info}, CPU count: {cpu_count}, CPU frequency: {cpu_freq} "
+    return f"Processor: {cpu_info}, CPU count: {cpu_count}, CPU frequency: {cpu_freq} Mhz"
 
 def get_user_info():
     try:
         res = subprocess.run(["whoami"], capture_output=True, check=True)
-        user = res.stdout.strip().decode("utf-8")
-
-        return f"Current user: {user}"
+        
     except subprocess.CalledProcessError as e:
-        raise Exception("Error retrieving user info") from e
+        print("Error retrieving user info")
+        print(e.returncode, e.output)
+        raise e
+    
+    user = res.stdout.strip().decode("utf-8")
+
+    return f"Current user: {user}"
 
 def get_load_info():
-    return f"Load average for 1, 5 and 15 minutes: {os.getloadavg()}"
+    try:
+        res = os.getloadavg()
+    except OSError as e:
+        raise OSError("Error retrieving load average info") from e
+
+    return f"Load average for 1, 5 and 15 minutes: {res}"
 
 def get_ip_info():
-    res = subprocess.run(["ipconfig",  "getifaddr",  "en0"], capture_output=True, check=True)
+    try:
+        res = subprocess.run(["ipconfig",  "getifaddr",  "en0"], capture_output=True, check=True)
+    except subprocess.CalledProcessError as e:
+        print("Error retrieving ip info")
+        print(e.returncode, e.output)
+        raise e
+    
     ip_addr = res.stdout.strip().decode("utf-8")
 
     return f"IP address: {ip_addr}"
