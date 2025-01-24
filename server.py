@@ -38,6 +38,8 @@ def create_order():
     order_id = str(uuid4())
     order = data["order"]
 
+    print(data)
+
     total_price = 0
     for o in order:
         if o not in menu:
@@ -92,7 +94,7 @@ def delete_pizza_admin(pizza_id):
     return jsonify({"message": f"Successfully deleted pizza {pizza_id}"}), 200
 
 
-@app.route("/order/<order_id>", methods = ["DELETE"])
+@app.route("/admin/order/<order_id>", methods = ["DELETE"])
 @auth.login_required
 def cancel_order_admin(order_id):
     if order_id not in orders:
