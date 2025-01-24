@@ -26,7 +26,7 @@ def load_data():
         with open(emails_path, 'r') as f:
             emails_list = []
             for line in f:
-                emails_list.append(line)
+                emails_list.append(line.strip())
     except FileNotFoundError as e:
         raise FileNotFoundError("Error: file was not found") from e
 
