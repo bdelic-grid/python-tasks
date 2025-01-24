@@ -16,10 +16,10 @@ def parse_log_file(filename):
         
         return user_agents
     
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Error: The file '{filename}' was not found")
-    except Exception as e:
-        raise Exception(f"An error occurred while processing the log file: {e}")
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Error: The file '{filename}' was not found") from e
+    except IOError as e:
+        raise IOError(f"Error while reading the file {filename}") from e
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -37,5 +37,7 @@ if __name__ == '__main__':
             count = user_agents[user_agent]
             print(f"{user_agent}: {count} request(s)")
     
-    except Exception as e:
+    except FileNotFoundError as e:
+        print(e)
+    except IOError as e:
         print(e)
