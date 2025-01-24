@@ -56,7 +56,7 @@ def get_load_info():
 
 def get_ip_info():
     try:
-        res = subprocess.run(["ipconfig",  "getifaddr",  "en0"], capture_output=True, check=True)
+        res = subprocess.run(["curl",  "ifconfig.me"], capture_output=True, check=True)
     except subprocess.CalledProcessError as e:
         print("Error retrieving ip info")
         print(e.returncode, e.output)
