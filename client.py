@@ -57,8 +57,11 @@ def add_pizza_admin(name, price, token):
     }
     send_request(f"/menu", method="POST", data=payload, token=token)
 
-def delete_pizza_admin(id, token):
-    send_request(f"/menu/{id}", method="DELETE", token=token)
+def delete_pizza_admin(pizza_id, token):
+    send_request(f"/menu/{pizza_id}", method="DELETE", token=token)
+
+def cancel_order_admin(order_id, token):
+    send_request(f"/admin/order/{order_id}", method="DELETE", token=token)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pizza ordering CLI")
@@ -123,6 +126,16 @@ if __name__ == "__main__":
                 print("Provide an admin token!")
                 sys.exit(1)
             delete_pizza_admin(args.pizza_ids, args.token)
+
+        if args.request == "cancel_order_admin":
+            if not args.token:
+                print("Provide an admin token!")
+                sys.exit(1)
+            elif not args.order_id:
+                print("Provide order id!")
+                sys.exit(1)
+
+            cancel_order_admin(args.order_id, args.token)
 
     else:
         print("Invalid role! Choose either admin or customer")
