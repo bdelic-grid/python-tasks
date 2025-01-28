@@ -4,7 +4,6 @@ import json
 from flask import Flask, jsonify, request
 from flask_httpauth import HTTPTokenAuth
 
-
 # {id: {name, price}}
 menu = {1: {"name": "Margherita", "price": 8.99},
           2: {"name": "Pepperoni", "price": 9.99}}
@@ -13,7 +12,7 @@ menu = {1: {"name": "Margherita", "price": 8.99},
 orders = {}
 statuses = ["ready_to_be_delivered", "not_ready_to_be_delivered"]
 
-# name
+# [name]
 users = []
 
 app = Flask(__name__)
