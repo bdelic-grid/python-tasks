@@ -11,9 +11,5 @@ def getExtension():
     return ext
 
 if __name__ == "__main__":
-    try:
-        ext = getExtension()
-        print(f"Extension is {ext}")
-    except ValueError as e:
-        print(e)
-        sys.exit(1)
+    ext = getExtension()
+    print(f"Extension is {ext}")

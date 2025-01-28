@@ -1,12 +1,8 @@
 import sys
 
 if __name__ == "__main__":
-    try:
-        input_string = input("Please enter a list of integers separated using commas: ")
-        numbers = list(map(int, input_string.split(",")))
-    except ValueError:
-        print("Invalid input, please enter a list of integers!")
-        sys.exit(1)
+    input_string = input("Please enter a list of integers separated using commas: ")
+    numbers = list(map(int, input_string.split(",")))
 
     numbers_set = set(numbers)
     print(f"Removed duplicates: {numbers_set}")
