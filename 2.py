@@ -209,11 +209,8 @@ def send_emails(survey_url, emails):
 
 
 if __name__ == "__main__":
-    try:
-        json_data, emails = load_data()
-        access_token = load_token().strip()
-    except FileNotFoundError as e:
-        print(e)
+    json_data, emails = load_data()
+    access_token = load_token().strip()
 
     survey_name, questions, page_info, answers = parse_json(json_data)
 

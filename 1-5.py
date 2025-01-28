@@ -17,30 +17,36 @@ def get_distro_info():
 
         return f"Product name: {product_name}, product version: {product_version}, build version: {build_version}"
     except subprocess.CalledProcessError as e:
-        print("Error retrieving distro info")
         print(e.returncode, e.output)
-        raise e
+        raise RuntimeError("Failed to retrieve distro info") from e
     
 def get_mem_info():
-    memory_info = psutil.virtual_memory()
-
-    return f"Total memory: {memory_info.total / 1024 / 1024} MB, available memory: {memory_info.available / 1024 / 1024}MB, used memory: {memory_info.used / 1024 / 1024} MB"
+    try:
+        memory_info = psutil.virtual_memory()
+    except psutil.Error as e:
+        raise psutil.Error from e
     
+    return f"Total memory: {memory_info.total / 1024 / 1024} MB, available memory: {memory_info.available / 1024 / 1024}MB, used memory: {memory_info.used / 1024 / 1024} MB"
+
+
+
 def get_cpu_info():
     cpu_info = platform.processor()
-    cpu_count = psutil.cpu_count(logical=False)
-    cpu_freq = psutil.cpu_freq()[0]
 
+    try:
+        cpu_count = psutil.cpu_count(logical=False)
+        cpu_freq = psutil.cpu_freq()[0]
+    except psutil.Error as e:
+        raise psutil.Error from e
+    
     return f"Processor: {cpu_info}, CPU count: {cpu_count}, CPU frequency: {cpu_freq} Mhz"
 
 def get_user_info():
     try:
         res = subprocess.run(["whoami"], capture_output=True, check=True)
-        
     except subprocess.CalledProcessError as e:
-        print("Error retrieving user info")
         print(e.returncode, e.output)
-        raise e
+        raise RuntimeError("Failed to retrieve user info") from e
     
     user = res.stdout.strip().decode("utf-8")
 
@@ -58,9 +64,8 @@ def get_ip_info():
     try:
         res = subprocess.run(["ipconfig",  "getifaddr",  "en0"], capture_output=True, check=True)
     except subprocess.CalledProcessError as e:
-        print("Error retrieving ip info")
         print(e.returncode, e.output)
-        raise e
+        raise RuntimeError("Failed to retrieve IP address") from e
     
     ip_addr = res.stdout.strip().decode("utf-8")
 
@@ -78,20 +83,17 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    try:
-        if args.distro:
-            print(get_distro_info())
-        elif args.memory:
-            print(get_mem_info())
-        elif args.cpu:
-            print(get_cpu_info())
-        elif args.user:
-            print(get_user_info())
-        elif args.load:
-            print(get_load_info())
-        elif args.ip:
-            print(get_ip_info())
-        else:
-            print("Invalid option!")
-    except Exception as e:
-        print(f"Error: {e}")
+    if args.distro:
+        print(get_distro_info())
+    elif args.memory:
+        print(get_mem_info())
+    elif args.cpu:
+        print(get_cpu_info())
+    elif args.user:
+        print(get_user_info())
+    elif args.load:
+        print(get_load_info())
+    elif args.ip:
+        print(get_ip_info())
+    else:
+        print("Invalid option!")
