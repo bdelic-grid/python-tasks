@@ -20,26 +20,20 @@ def get_distro_info():
         print(e.returncode, e.output)
         raise RuntimeError("Failed to retrieve distro info") from e
     
+
 def get_mem_info():
-    try:
-        memory_info = psutil.virtual_memory()
-    except psutil.Error as e:
-        raise psutil.Error from e
+    memory_info = psutil.virtual_memory()
     
     return f"Total memory: {memory_info.total / 1024 / 1024} MB, available memory: {memory_info.available / 1024 / 1024}MB, used memory: {memory_info.used / 1024 / 1024} MB"
 
 
-
 def get_cpu_info():
     cpu_info = platform.processor()
-
-    try:
-        cpu_count = psutil.cpu_count(logical=False)
-        cpu_freq = psutil.cpu_freq()[0]
-    except psutil.Error as e:
-        raise psutil.Error from e
+    cpu_count = psutil.cpu_count(logical=False)
+    cpu_freq = psutil.cpu_freq()[0]
     
     return f"Processor: {cpu_info}, CPU count: {cpu_count}, CPU frequency: {cpu_freq} Mhz"
+
 
 def get_user_info():
     try:
@@ -52,13 +46,12 @@ def get_user_info():
 
     return f"Current user: {user}"
 
+
 def get_load_info():
-    try:
-        res = os.getloadavg()
-    except OSError as e:
-        raise OSError("Error retrieving load average info") from e
+    res = os.getloadavg()
 
     return f"Load average for 1, 5 and 15 minutes: {res}"
+
 
 def get_ip_info():
     try:

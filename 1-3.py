@@ -3,23 +3,17 @@ import re
 from collections import defaultdict
 
 def parse_log_file(filename):
-    try:
-        user_agents = defaultdict(int)
-        with open(filename, 'r', encoding="utf-8") as file:
-            for line in file:
-                match = re.search('"[^"]*"$', line)
-                if match:
-                    user_agent = match.group(0).strip('"')
-                    if user_agent == '-':
-                        user_agent = "No user agent provided"
-                    user_agents[user_agent] += 1
+    user_agents = defaultdict(int)
+    with open(filename, 'r', encoding="utf-8") as file:
+        for line in file:
+            match = re.search('"[^"]*"$', line)
+            if match:
+                user_agent = match.group(0).strip('"')
+                if user_agent == '-':
+                    user_agent = "No user agent provided"
+                user_agents[user_agent] += 1
 
-        return user_agents
-    
-    except FileNotFoundError as e:
-        raise FileNotFoundError(f"Error: The file '{filename}' was not found") from e
-    except IOError as e:
-        raise IOError(f"Error while reading the file {filename}") from e
+    return user_agents
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
