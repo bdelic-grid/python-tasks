@@ -58,5 +58,5 @@ User role can be either admin or customer. **If you are acting as an admin, plea
 - `python3 client.py customer create_order --username John --pizza_ids 1,2,1`
 - `python3 client.py customer check_status --order_id 55c2ceaf-7881-47fd-8543-5aff02ea44a1`
 - `python3 client.py customer cancel_order --order_id 55c2ceaf-7881-47fd-8543-5aff02ea44a1`
-- `python3 client.py admin add_pizza_admin --name Pineapple --price 30.02 --token supersecrettoken`
+- `python3 client.py admin add_pizza_admin --name Pineapple --price 30.02 --token supersecrettoken --token supersecrettoken`
 - `python3 client.py admin cancel_order_admin --order_id 55c2ceaf-7881-47fd-8543-5aff02ea44a1`
