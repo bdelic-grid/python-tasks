@@ -1,6 +1,7 @@
 from uuid import uuid4
 from random import choice
 import json
+import os
 from flask import Flask, jsonify, request
 from flask_httpauth import HTTPTokenAuth
 
@@ -18,7 +19,7 @@ users = []
 app = Flask(__name__)
 auth = HTTPTokenAuth(scheme="Bearer")
 
-ADMIN_TOKEN = "supersecrettoken"
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
 
 @auth.verify_token
 def verify_token(token):
